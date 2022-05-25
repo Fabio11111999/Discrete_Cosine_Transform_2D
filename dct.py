@@ -14,9 +14,19 @@ def my_dct(f):
     t = [(2 * i + 1) / (2 * N) for i in range(0, N)]
     alpha = get_alpha(N)
     c = [0] * N
+
+    # New version
+    # TODO: convert everything to numpy
+    t = np.array(t)
+    alpha = np.array(alpha)
+    f = np.array(f)
     for k in range(0, N):
-        for i in range(0, N):
-            c[k] += f[i] * alpha[k] * math.cos(math.pi * k * t[i])
+        c[k] = np.sum(f * alpha[k] * np.cos(math.pi * k * t))
+
+    # Old version
+    #for k in range(0, N):
+    #    for i in range(0, N):
+    #        c[k] += f[i] * alpha[k] * math.cos(math.pi * k * t[i])
     return c
 
 def my_idct(c):
@@ -24,9 +34,22 @@ def my_idct(c):
     t = [(2 * i + 1) / (2 * N) for i in range(0, N)]
     alpha = get_alpha(N)
     f = [0] * N
+
+    # New version
+    # TODO: convert everything to numpy
+    t = np.array(t)
+    alpha = np.array(alpha)
+    f = np.array(f)
+    ran_k = np.zeros(N)
     for i in range(0, N):
-        for k in range(0, N):
-            f[i] += c[k] * alpha[k] * math.cos(math.pi * k * t[i])
+        ran_k = i
+    for i in range(0, N):
+        f[i] = np.sum(c * alpha * np.cos(math.pi * ran_k * t[i]))
+
+    # Old version
+    #for i in range(0, N):
+    #    for k in range(0, N):
+    #        f[i] += c[k] * alpha[k] * math.cos(math.pi * k * t[i])
     return f
 
 def my_dct2(pf):
