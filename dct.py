@@ -70,6 +70,12 @@ def my_idct2(pc):
         c[:,j] = my_idct(c[:,j])
     return c
 
+def check_pdf_examples():
+    # 1D
+    print(my_dct(np.loadtxt('CheckValues/1d.txt')))
+    # 2D
+    print(my_dct2(np.loadtxt('CheckValues/2d.txt')))
+
 def examples():
     # 1D
     f = np.array([3., 2., 5., 9., 1.])
@@ -116,6 +122,7 @@ def test(N):
     
 
 def main():
+    check_pdf_examples()
     for sz in range(20, 501, 20):
         print(sz, test(sz))
 
