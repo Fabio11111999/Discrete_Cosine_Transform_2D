@@ -10,10 +10,11 @@ def get_alpha(N):
     return alpha
 
 def my_dct(f):
+    f = f.astype('float64')
     N = len(f)
     t = [(2 * i + 1) / (2 * N) for i in range(0, N)]
     alpha = get_alpha(N)
-    c = [0] * N
+    c = np.array([0] * N).astype('float64')
 
     # New version
     # TODO: convert everything to numpy
@@ -23,13 +24,10 @@ def my_dct(f):
     for k in range(0, N):
         c[k] = np.sum(f * alpha[k] * np.cos(math.pi * k * t))
 
-    # Old version
-    #for k in range(0, N):
-    #    for i in range(0, N):
-    #        c[k] += f[i] * alpha[k] * math.cos(math.pi * k * t[i])
     return c
 
 def my_idct(c):
+    c = c.astype('float64')
     N = len(c)
     t = [(2 * i + 1) / (2 * N) for i in range(0, N)]
     alpha = get_alpha(N)
@@ -39,21 +37,17 @@ def my_idct(c):
     # TODO: convert everything to numpy
     t = np.array(t)
     alpha = np.array(alpha)
-    f = np.array(f)
+    f = np.array(f).astype('float64')
     ran_k = np.zeros(N)
     for i in range(0, N):
-        ran_k = i
+        ran_k[i] = i
     for i in range(0, N):
         f[i] = np.sum(c * alpha * np.cos(math.pi * ran_k * t[i]))
 
-    # Old version
-    #for i in range(0, N):
-    #    for k in range(0, N):
-    #        f[i] += c[k] * alpha[k] * math.cos(math.pi * k * t[i])
     return f
 
 def my_dct2(pf):
-    f = np.copy(pf)
+    f = np.copy(pf.astype('float64'))
     n, m = f.shape
     for j in range(m):
         f[:,j] = my_dct(f[:,j])
@@ -62,7 +56,7 @@ def my_dct2(pf):
     return f
     
 def my_idct2(pc):
-    c = np.copy(pc)
+    c = np.copy(pc.astype('float64'))
     n, m = c.shape
     for i in range(n):
         c[i,:] = my_idct(c[i,:])
@@ -118,7 +112,6 @@ def test(N):
     end_lib_time = time.time()
 
     return (end_my_time - start_my_time, end_lib_time - start_lib_time)
-    
     
 
 def main():
