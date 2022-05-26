@@ -50,15 +50,15 @@ def open_img(path):
 def save_img(img, path):
     img.save(path)
 
-def img_dct(F, d, file):
+def img_dct(F, d, load_path, save_path):
     # Opening the image
-    img = open_img(file)
+    img = open_img(load_path)
     conv_img = img_conv(F, d, img)
-    save_img(conv_img, "result.bmp")
+    save_img(conv_img, save_path)
     return
 
 def main():
-    img_dct(8, 5, "Immagini/deer.bmp")
+    img_dct(8, 5, "Immagini/deer.bmp", "result.bmp")
 
 if __name__ == "__main__":
     main()
