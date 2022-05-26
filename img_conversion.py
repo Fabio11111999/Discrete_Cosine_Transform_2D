@@ -2,13 +2,15 @@ from dct import my_dct2, my_idct2
 from scipy.fftpack import dct, idct
 from PIL import Image
 import numpy as np
+import io
 import itertools
+from PIL import ImageFile
 
-def img_dct(F, d, file):
-    # Opening the image
-    img = Image.open(file).convert("L")
+def img_conv(F, d, img):
+    if img.mode != "L":
+        img = img.convert("L")
     img_arr = np.array(img)
-    new_img = np.zeros(img_arr.shape)
+    res_arr = np.zeros(img_arr.shape)
 
     # Separating FxF blocks
     coord = [(x, y) for x in range(0, img_arr.shape[0]-F+1, F)
@@ -28,19 +30,31 @@ def img_dct(F, d, file):
                     c[k][l] = 0.0
                     
         # Applying I-DCT2
-        ff = idct(idct(c, axis=1, norm='ortho'), axis=0, norm='ortho')
+        res_f = idct(idct(c, axis=1, norm='ortho'), axis=0, norm='ortho')
         
         # Bounding to [0, 255] and
         # mapping the block in the converted array
-        ff = ff.astype('int')
-        ff = np.maximum(ff, 0)
-        ff = np.minimum(ff, 255)
-        new_img[x:x+F, y:y+F] = ff   
+        res_f = res_f.astype('int')
+        res_f = np.maximum(res_f, 0)
+        res_f = np.minimum(res_f, 255)
+        res_arr[x:x+F, y:y+F] = res_f   
 
     # Saving the image
-    res = Image.fromarray(new_img.astype('uint8'))
+    res = Image.fromarray(res_arr.astype('uint8'))
     res = res.convert("L")
-    res.save("result.bmp")
+    return res
+
+def open_img(path):
+    return Image.open(path)
+
+def save_img(img, path):
+    img.save(path)
+
+def img_dct(F, d, file):
+    # Opening the image
+    img = open_img(file)
+    conv_img = img_conv(F, d, img)
+    save_img(conv_img, "result.bmp")
     return
 
 def main():
