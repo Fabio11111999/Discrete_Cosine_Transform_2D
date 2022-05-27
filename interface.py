@@ -7,14 +7,20 @@ from PIL import Image
 from PIL import ImageTk
 from img_conversion import img_dct
 
-path = ''
-rows, cols = 0, 0
-f, d = 0, 0
+class compression:
+    def __init__(self):
+        self.path = ''
+        self.rows = 0
+        self.cols = 0
+        self.f = 0
+        self.d = 0
+
+choice = compression()
 
 def readImage():
-    global path, rows, cols
-    img = Image.open(path)
-    rows, cols = img.size
+    global choice
+    img = Image.open(choice.path)
+    choice.rows, choice.cols = img.size
 
 
 def openFile():
@@ -23,49 +29,46 @@ def openFile():
         title='Open a file',
         initialdir='/home/Discrete_Cosine_Trasform',
         filetypes=filetypes)
-    global path
-    path = filepath
+    global choice
+    choice.path = filepath
 
 def updateF(val):
-    global f
-    f = val
+    global choice
+    choice.f = val
 
 def updateD(val):
-    global d
-    d = val
+    global choice
+    choice.d = val
 
-def visualize_zipped(path_result):
-    global path, f, d, rows, cols
+def visualize_compressed(path_result):
     display = Tk()
     display.title("Compressed")
-    display.geometry('%dx%d+%d+%d' % (rows, cols, 900, 100))
+    display.geometry('%dx%d+%d+%d' % (choice.rows, choice.cols, 900, 100))
     canvas = Canvas(display)
     img1 = ImageTk.PhotoImage(Image.open(path_result), master=canvas)
-
     first_image = Label(display, image=img1)
     first_image.place(x=0, y=0)
     display.mainloop()
 
-def visualize():
-    global path, f, d, rows, cols
+def visualize_original():
+    global choice
     # comprimo 
     path_result = 'compressed.bmp'
-    img_dct(int(f), int(d), path, path_result)
+    img_dct(int(choice.f), int(choice.d), choice.path, path_result)
     display = Tk()
     display.title("Original")
-    display.geometry('%dx%d+%d+%d' % (rows, cols, 900, 100))
+    display.geometry('%dx%d+%d+%d' % (choice.rows, choice.cols, 800, 100))
     canvas = Canvas(display)
-    img1 = ImageTk.PhotoImage(Image.open(path), master=canvas)
-
+    img1 = ImageTk.PhotoImage(Image.open(choice.path), master=canvas)
     first_image = Label(display, image=img1)
     first_image.place(x=0, y=0)
-    visualize_zipped(path_result)
+    visualize_compressed(path_result)
     display.mainloop()
 
 
 def nextWindow():
-    global path, rows, cols
-    if path == '':
+    global choice
+    if choice.path == '':
         messagebox.showerror('Error', 'Error: Select a Valid File!')
     else:
         readImage()
@@ -73,23 +76,23 @@ def nextWindow():
         second_window.title('Parameters')
         second_window.geometry('%dx%d+%d+%d' % (430, 400, 100, 400))
 
-        size_label = Label(second_window, text='Image size: (' + str(rows) + 'x' + str(cols) +')' , font=('arial', 25))
+        size_label = Label(second_window, text='Image size: (' + str(choice.rows) + 'x' + str(choice.cols) +')' , font=('arial', 25))
         size_label.place(x=10, y=20)
 
 
         first_label = Label(second_window, text='F (squares width):', font=('arial', 25))
         first_label.place(x=10, y=120)
 
-        slide_bar1 = Scale(second_window, from_=1, to=min(rows, cols), orient=HORIZONTAL, font=('arial', 25), command=updateF)
+        slide_bar1 = Scale(second_window, from_=1, to=min(choice.rows, choice.cols), orient=HORIZONTAL, font=('arial', 25), command=updateF)
         slide_bar1.place(x=300, y=100)
 
         second_label = Label(second_window, text='d (cut-off):', font=('arial', 25))
         second_label.place(x=10, y=220)
 
-        slide_bar2 = Scale(second_window, from_=0, to=2 * min(rows, cols) - 2, orient=HORIZONTAL, font=('arial', 25), command=updateD)
+        slide_bar2 = Scale(second_window, from_=0, to=2 * min(choice.rows, choice.cols) - 2, orient=HORIZONTAL, font=('arial', 25), command=updateD)
         slide_bar2.place(x=300, y=200)
 
-        go_next = Button(second_window, text='Compress', command=visualize, font=('arial', 25), width=20)
+        go_next = Button(second_window, text='Compress', command=visualize_original, font=('arial', 25), width=20)
         go_next.place(x=10, y=300)
 
         second_window.mainloop()
