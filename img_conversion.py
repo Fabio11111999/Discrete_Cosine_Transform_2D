@@ -6,11 +6,15 @@ import io
 import itertools
 from PIL import ImageFile
 
+
 def img_conv(F, d, img):
+    
     if img.mode != "L":
         img = img.convert("L")
     img_arr = np.array(img)
-    res_arr = np.zeros(img_arr.shape)
+    
+    res_arr = np.zeros((img_arr.shape[0] - img_arr.shape[0] % F,
+                        img_arr.shape[1] - img_arr.shape[1] % F))
 
     # Separating FxF blocks
     coord = [(x, y) for x in range(0, img_arr.shape[0]-F+1, F)
@@ -58,7 +62,7 @@ def img_dct(F, d, load_path, save_path):
     return
 
 def main():
-    img_dct(8, 5, "Immagini/deer.bmp", "result.bmp")
+    img_dct(20, 5, "Immagini/bridge1.bmp", "result.bmp")
 
 if __name__ == "__main__":
     main()
