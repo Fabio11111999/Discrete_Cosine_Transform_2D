@@ -4,7 +4,7 @@ from scipy.fftpack import dct, idct
 import time
 
 def get_alpha(N):
-    alpha = [1. / math.sqrt(N)] * N
+    alpha = np.array([1. / math.sqrt(N)] * N)
     for i in range(1, N):
         alpha[i] = math.sqrt(2. / N)
     return alpha
@@ -12,38 +12,24 @@ def get_alpha(N):
 def my_dct(f):
     f = f.astype('float64')
     N = len(f)
-    t = [(2 * i + 1) / (2 * N) for i in range(0, N)]
+    t = np.array([(2 * i + 1) / (2 * N) for i in range(0, N)])
     alpha = get_alpha(N)
     c = np.array([0] * N).astype('float64')
-
-    # New version
-    # TODO: convert everything to numpy
-    t = np.array(t)
-    alpha = np.array(alpha)
-    f = np.array(f)
     for k in range(0, N):
         c[k] = np.sum(f * alpha[k] * np.cos(math.pi * k * t))
-
     return c
 
 def my_idct(c):
     c = c.astype('float64')
-    N = len(c)
-    t = [(2 * i + 1) / (2 * N) for i in range(0, N)]
-    alpha = get_alpha(N)
-    f = [0] * N
-
-    # New version
-    # TODO: convert everything to numpy
-    t = np.array(t)
-    alpha = np.array(alpha)
-    f = np.array(f).astype('float64')
-    ran_k = np.zeros(N)
-    for i in range(0, N):
+    n = len(c)
+    t = np.array([(2 * i + 1) / (2 * n) for i in range(0, n)])
+    alpha = get_alpha(n)
+    f = np.zeros(n).astype('float64')
+    ran_k = np.zeros(n)
+    for i in range(0, n):
         ran_k[i] = i
-    for i in range(0, N):
+    for i in range(0, n):
         f[i] = np.sum(c * alpha * np.cos(math.pi * ran_k * t[i]))
-
     return f
 
 def my_dct2(pf):
@@ -115,9 +101,16 @@ def test(N):
     
 
 def main():
-    check_pdf_examples()
-    for sz in range(20, 501, 20):
-        print(sz, test(sz))
+    # check_pdf_examples()
+    results = []
+    for sz in range(20, 801, 20):
+        results.append(test(sz))
+
+    for i in range(len(results)):
+        print('(' + str(i * 20 + 20) + ',' + str(round(results[i][0], 4)) + ')', end='')
+    print()
+    for i in range(len(results)):
+        print('(' + str(i * 20 + 20) + ',' + str(round(results[i][1], 4)) + ')', end='')
 
 
 if __name__ == '__main__':
