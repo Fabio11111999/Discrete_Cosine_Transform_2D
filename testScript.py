@@ -23,10 +23,32 @@ def testBW():
         idx_F += ran_d
     plt.show()
 
+def testGrad():
+    bw_img = open_img("Immagini/gradient.bmp")
+    F_vals = [8, 16, 32, 64]
+    ran_d = 4
+    idx = 0
+    fig, ax = plt.subplots(nrows = len(F_vals), ncols = ran_d)
+    ax = ax.flatten()
+    for F in F_vals:
+        for d in range(ran_d):
+            com_img = img_conv(F, d+1, bw_img)
+            ax[idx].imshow(com_img.convert("RGB"))
+            ax[idx].set_xticks([])
+            ax[idx].set_yticks([])
+            idx += 1
+    for d in range(ran_d):
+        plt.setp(ax[-1-d], xlabel=f'd = {ran_d-d}')
+    idx_F = 0
+    for F in F_vals:
+        plt.setp(ax[idx_F], ylabel=f'F = {F}')
+        idx_F += ran_d
+    plt.show()
+
 def testChess():
     bw_img = open_img("Immagini/160x160.bmp")
-    F_vals = [2, 4, 8, 10, 16, 20, 40]
-    ran_d = 7
+    F_vals = [2, 5, 8, 10, 20]
+    ran_d = 4
     idx = 0
     fig, ax = plt.subplots(nrows = len(F_vals), ncols = ran_d)
     ax = ax.flatten()
@@ -70,9 +92,10 @@ def testDeer():
     plt.show()
 
 def main():
-    testBW()
-    testChess()
-    testDeer()
+    # testBW()
+    # testChess()
+    # testDeer()
+    testGrad()
 
 
 if __name__ == "__main__":
