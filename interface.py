@@ -12,7 +12,7 @@ class compression:
         self.path = ''
         self.rows = 0
         self.cols = 0
-        self.f = 0
+        self.f = 1
         self.d = 0
 
 choice = compression()
