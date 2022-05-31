@@ -8,34 +8,39 @@ from PIL import ImageFile
 
 
 def img_conv(F, d, img):
-    
+    # Converting the image to a numpy array
     if img.mode != "L":
         img = img.convert("L")
     img_arr = np.array(img)
-    
     res_arr = np.zeros((img_arr.shape[0] - img_arr.shape[0] % F,
                         img_arr.shape[1] - img_arr.shape[1] % F))
 
-    # Separating FxF blocks
+    # Section 1
+    # Separating F X F blocks
     coord = [(x, y) for x in range(0, img_arr.shape[0]-F+1, F)
              for y in range(0, img_arr.shape[1]-F+1, F)]
     blocks = []
     for (x, y) in coord:
         blocks.append(np.copy(img_arr[x:x+F, y:y+F]))
-        
+
+    # Section 2
     for (f, (x, y)) in zip(blocks, coord):
+        # Section 2.1
         # Applying DCT2
         c = dct(dct(f, axis=0, norm='ortho'), axis=1, norm='ortho')
 
+        # Section 2.2
         # Cutting frequencies (with threshold d)
         for k in range(0, F):
             for l in range(0, F):
                 if k+l >= d:
                     c[k][l] = 0.0
                     
+        # Section 2.3
         # Applying I-DCT2
         res_f = idct(idct(c, axis=1, norm='ortho'), axis=0, norm='ortho')
         
+        # Section 2.4
         # Bounding to [0, 255] and
         # mapping the block in the converted array
         res_f = res_f.astype('int')
@@ -43,7 +48,7 @@ def img_conv(F, d, img):
         res_f = np.minimum(res_f, 255)
         res_arr[x:x+F, y:y+F] = res_f   
 
-    # Saving the image
+    # Converting the array to an image
     res = Image.fromarray(res_arr.astype('uint8'))
     res = res.convert("L")
     return res
